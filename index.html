@@ -314,7 +314,7 @@
   });
   [filterText, filterVisibility, filterYear, filterChecked].forEach(el => el.addEventListener('input', render));
 
-  fetch('data.json')
+  fetch('data.json', { cache: 'no-cache' })
     .then(response => response.json())
     .then(data => {
       owner = data.owner;
