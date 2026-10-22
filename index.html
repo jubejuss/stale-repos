@@ -171,12 +171,12 @@
       <tbody id="repo-rows"></tbody>
     </table>
   </div>
-  <footer>Andmed seisuga 22.10.2026. Privaatsetel repodel linki pole. Linnukesed salvestuvad ainult selles brauseris. Prinditakse parajasti nähtav nimekiri.</footer>
+  <footer>Andmed seisuga <span id="generated-date">–</span>, uuenevad iga kuu 1. kuupäeval. Privaatsetel repodel linki pole. Linnukesed salvestuvad ainult selles brauseris. Prinditakse parajasti nähtav nimekiri.</footer>
 </main>
 
 <script>
-  const SNAPSHOT_DATE = new Date('2026-10-22T00:00:00');
-  const OWNER = 'jubejuss';
+  let snapshotDate = new Date();
+  let owner = 'jubejuss';
   const MS_PER_DAY = 86400000;
 
   const tbody = document.getElementById('repo-rows');
@@ -255,7 +255,7 @@
       const nameCell = document.createElement('td');
       if (r.visibility === 'public') {
         const link = document.createElement('a');
-        link.href = `https://github.com/${OWNER}/${r.name}`;
+        link.href = `https://github.com/${owner}/${r.name}`;
         link.textContent = r.name;
         nameCell.append(link);
       } else {
@@ -317,9 +317,12 @@
   fetch('data.json')
     .then(response => response.json())
     .then(data => {
-      repos = data.map(r => ({
+      owner = data.owner;
+      snapshotDate = new Date(data.generated + 'T00:00:00');
+      document.getElementById('generated-date').textContent = snapshotDate.toLocaleDateString('et');
+      repos = data.repos.map(r => ({
         ...r,
-        idleDays: r.lastCommit ? Math.floor((SNAPSHOT_DATE - new Date(r.lastCommit + 'T00:00:00')) / MS_PER_DAY) : null
+        idleDays: r.lastCommit ? Math.floor((snapshotDate - new Date(r.lastCommit + 'T00:00:00')) / MS_PER_DAY) : null
       }));
       [...new Set(repos.map(r => r.lastCommit.slice(0, 4)).filter(Boolean))].sort().forEach(y => {
         filterYear.append(new Option(y, y));
