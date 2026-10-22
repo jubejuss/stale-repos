@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seisvad repod</title>
+<meta name="description" content="jubejuss GitHubi repod, mida pole üle aasta täiendatud">
+<style>
+  :root {
+    --color-bg: #fafaf9;
+    --color-surface: #ffffff;
+    --color-text: #1c1917;
+    --color-muted: #57534e;
+    --color-border: #e7e5e4;
+    --color-accent: #1d4ed8;
+    --color-row-hover: #f5f5f4;
+    --color-badge-private-bg: #fef3c7;
+    --color-badge-private-text: #78350f;
+    --color-badge-public-bg: #dcfce7;
+    --color-badge-public-text: #14532d;
+    --color-focus: #2563eb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg: #0c0a09;
+      --color-surface: #1c1917;
+      --color-text: #f5f5f4;
+      --color-muted: #a8a29e;
+      --color-border: #44403c;
+      --color-accent: #93c5fd;
+      --color-row-hover: #292524;
+      --color-badge-private-bg: #451a03;
+      --color-badge-private-text: #fde68a;
+      --color-badge-public-bg: #052e16;
+      --color-badge-public-text: #bbf7d0;
+      --color-focus: #93c5fd;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 1200px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 1.75rem; margin: 0 0 4px; }
+  .lead { color: var(--color-muted); margin: 0 0 24px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; margin-bottom: 16px; }
+  .field { display: flex; flex-direction: column; gap: 4px; font-size: 0.875rem; color: var(--color-muted); }
+  input, select {
+    font: inherit;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    min-height: 36px;
+  }
+  input[type="search"] { width: 260px; max-width: 100%; }
+  .count { margin-left: auto; color: var(--color-muted); font-size: 0.875rem; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--color-row-hover); }
+  th { padding: 0; white-space: nowrap; }
+  th button {
+    all: unset;
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  th button::after { content: " ↕"; color: var(--color-muted); font-weight: 400; }
+  th[aria-sort="ascending"] button::after { content: " ↑"; color: var(--color-text); }
+  th[aria-sort="descending"] button::after { content: " ↓"; color: var(--color-text); }
+  :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  td.date, td.number { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.number { text-align: right; }
+  td.message, td.description { color: var(--color-muted); min-width: 180px; }
+  a { color: var(--color-accent); }
+  .badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 0.8125rem; }
+  .badge.private { background: var(--color-badge-private-bg); color: var(--color-badge-private-text); }
+  .badge.public { background: var(--color-badge-public-bg); color: var(--color-badge-public-text); }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  footer { margin-top: 16px; color: var(--color-muted); font-size: 0.875rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Seisvad repod</h1>
+  <p class="lead" id="lead">GitHubi kasutaja jubejuss repod, kuhu pole üle aasta enda commit'e tehtud. Dependaboti uuendusi ei arvestata.</p>
+
+  <div class="controls">
+    <label class="field">Otsi
+      <input type="search" id="filter-text" placeholder="nimi, keel, kirjeldus">
+    </label>
+    <label class="field">Nähtavus
+      <select id="filter-visibility">
+        <option value="">Kõik</option>
+        <option value="public">Avalik</option>
+        <option value="private">Privaatne</option>
+      </select>
+    </label>
+    <label class="field">Viimane commit aastal
+      <select id="filter-year"><option value="">Kõik</option></select>
+    </label>
+    <p class="count" id="result-count" aria-live="polite"></p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <caption class="visually-hidden">Repod, veerupäise nupuga saab sorteerida</caption>
+      <thead>
+        <tr>
+          <th scope="col" data-key="name"><button type="button">Repo</button></th>
+          <th scope="col" data-key="lastCommit" aria-sort="ascending"><button type="button">Viimane commit</button></th>
+          <th scope="col" data-key="idleDays"><button type="button">Päevi seisnud</button></th>
+          <th scope="col" data-key="message"><button type="button">Viimane sõnum</button></th>
+          <th scope="col" data-key="visibility"><button type="button">Nähtavus</button></th>
+          <th scope="col" data-key="language"><button type="button">Keel</button></th>
+          <th scope="col" data-key="created"><button type="button">Loodud</button></th>
+          <th scope="col" data-key="description"><button type="button">Kirjeldus</button></th>
+        </tr>
+      </thead>
+      <tbody id="repo-rows"></tbody>
+    </table>
+  </div>
+  <footer>Andmed seisuga 22.10.2026. Privaatsetel repodel linki pole.</footer>
+</main>
+
+<script>
+  const SNAPSHOT_DATE = new Date('2026-10-22T00:00:00');
+  const OWNER = 'jubejuss';
+  const MS_PER_DAY = 86400000;
+
+  const tbody = document.getElementById('repo-rows');
+  const filterText = document.getElementById('filter-text');
+  const filterVisibility = document.getElementById('filter-visibility');
+  const filterYear = document.getElementById('filter-year');
+  const resultCount = document.getElementById('result-count');
+  const headers = document.querySelectorAll('th[data-key]');
+
+  let repos = [];
+  let sortKey = 'lastCommit';
+  let sortDirection = 1;
+
+  function cell(text, className) {
+    const td = document.createElement('td');
+    if (className) td.className = className;
+    td.textContent = text;
+    return td;
+  }
+
+  function render() {
+    const query = filterText.value.trim().toLowerCase();
+    const visibility = filterVisibility.value;
+    const year = filterYear.value;
+
+    const visible = repos
+      .filter(r => !visibility || r.visibility === visibility)
+      .filter(r => !year || r.lastCommit.startsWith(year))
+      .filter(r => !query || [r.name, r.language, r.description, r.message].join(' ').toLowerCase().includes(query))
+      .sort((a, b) => {
+        const x = a[sortKey], y = b[sortKey];
+        if (x === y) return a.name.localeCompare(b.name);
+        if (x === '' || x === null) return 1;
+        if (y === '' || y === null) return -1;
+        return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'et')) * sortDirection;
+      });
+
+    tbody.replaceChildren(...visible.map(r => {
+      const tr = document.createElement('tr');
+      const nameCell = document.createElement('td');
+      if (r.visibility === 'public') {
+        const link = document.createElement('a');
+        link.href = `https://github.com/${OWNER}/${r.name}`;
+        link.textContent = r.name;
+        nameCell.append(link);
+      } else {
+        nameCell.textContent = r.name;
+      }
+      const visibilityCell = document.createElement('td');
+      const badge = document.createElement('span');
+      badge.className = `badge ${r.visibility}`;
+      badge.textContent = r.visibility === 'private' ? 'Privaatne' : 'Avalik';
+      visibilityCell.append(badge);
+
+      tr.append(
+        nameCell,
+        cell(r.lastCommit || '–', 'date'),
+        cell(r.idleDays === null ? '–' : r.idleDays.toLocaleString('et'), 'number'),
+        cell(r.message, 'message'),
+        visibilityCell,
+        cell(r.language || '–'),
+        cell(r.created, 'date'),
+        cell(r.description, 'description')
+      );
+      return tr;
+    }));
+
+    resultCount.textContent = `${visible.length} / ${repos.length} repot`;
+  }
+
+  headers.forEach(th => {
+    th.querySelector('button').addEventListener('click', () => {
+      const key = th.dataset.key;
+      sortDirection = key === sortKey ? -sortDirection : 1;
+      sortKey = key;
+      headers.forEach(h => h.removeAttribute('aria-sort'));
+      th.setAttribute('aria-sort', sortDirection === 1 ? 'ascending' : 'descending');
+      render();
+    });
+  });
+  [filterText, filterVisibility, filterYear].forEach(el => el.addEventListener('input', render));
+
+  fetch('data.json')
+    .then(response => response.json())
+    .then(data => {
+      repos = data.map(r => ({
+        ...r,
+        idleDays: r.lastCommit ? Math.floor((SNAPSHOT_DATE - new Date(r.lastCommit + 'T00:00:00')) / MS_PER_DAY) : null
+      }));
+      [...new Set(repos.map(r => r.lastCommit.slice(0, 4)).filter(Boolean))].sort().forEach(y => {
+        filterYear.append(new Option(y, y));
+      });
+      render();
+    })
+    .catch(() => { resultCount.textContent = 'Andmete laadimine ebaõnnestus'; });
+</script>
+</body>
+</html>
