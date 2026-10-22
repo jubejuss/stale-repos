@@ -324,6 +324,9 @@
         ...r,
         idleDays: r.lastCommit ? Math.floor((snapshotDate - new Date(r.lastCommit + 'T00:00:00')) / MS_PER_DAY) : null
       }));
+      const existingNames = new Set(repos.map(r => r.name));
+      [...checked].filter(name => !existingNames.has(name)).forEach(name => checked.delete(name));
+      saveChecked();
       [...new Set(repos.map(r => r.lastCommit.slice(0, 4)).filter(Boolean))].sort().forEach(y => {
         filterYear.append(new Option(y, y));
       });
