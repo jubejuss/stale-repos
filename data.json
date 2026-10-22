@@ -3,15 +3,6 @@
  "generated": "2026-10-22",
  "repos": [
   {
-   "name": "css_grid_lightbox_gallery",
-   "lastCommit": "2020-12-12",
-   "message": "index file correction",
-   "visibility": "public",
-   "language": "HTML",
-   "created": "2020-12-12",
-   "description": ""
-  },
-  {
    "name": "mm-19-dokud",
    "lastCommit": "2021-03-02",
    "message": "modified nuxt lesson",
@@ -27,33 +18,6 @@
    "visibility": "public",
    "language": "",
    "created": "2021-02-21",
-   "description": ""
-  },
-  {
-   "name": "learn-docs-test",
-   "lastCommit": "2021-03-04",
-   "message": "first commit",
-   "visibility": "public",
-   "language": "Shell",
-   "created": "2021-03-04",
-   "description": ""
-  },
-  {
-   "name": "tludocs",
-   "lastCommit": "2021-04-19",
-   "message": "javascript documentation",
-   "visibility": "public",
-   "language": "Shell",
-   "created": "2021-03-15",
-   "description": ""
-  },
-  {
-   "name": "learn-docs",
-   "lastCommit": "2021-04-21",
-   "message": "Added Emilias link",
-   "visibility": "public",
-   "language": "Shell",
-   "created": "2021-03-04",
    "description": ""
   },
   {
@@ -75,30 +39,12 @@
    "description": ""
   },
   {
-   "name": "pro2",
-   "lastCommit": "2021-11-25",
-   "message": "Initial commit",
-   "visibility": "public",
-   "language": "",
-   "created": "2021-11-25",
-   "description": ""
-  },
-  {
    "name": "prokakskodu",
    "lastCommit": "2022-01-07",
    "message": "clear docs folder",
    "visibility": "public",
    "language": "TypeScript",
    "created": "2021-11-18",
-   "description": ""
-  },
-  {
-   "name": "node-and-reusheadfooter",
-   "lastCommit": "2022-01-25",
-   "message": "Remove node server - pointless",
-   "visibility": "public",
-   "language": "HTML",
-   "created": "2022-01-22",
    "description": ""
   },
   {
