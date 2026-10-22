@@ -171,7 +171,7 @@
       <tbody id="repo-rows"></tbody>
     </table>
   </div>
-  <footer>Andmed seisuga <span id="generated-date">–</span>, uuenevad iga kuu 1. kuupäeval. Privaatsetel repodel linki pole. Linnukesed salvestuvad ainult selles brauseris. Prinditakse parajasti nähtav nimekiri.</footer>
+  <footer>Andmed seisuga <span id="generated-date">–</span>, uuenevad iga kuu 1. kuupäeval. Privaatsete repode lingid avanevad ainult omanikule. Linnukesed salvestuvad ainult selles brauseris. Prinditakse parajasti nähtav nimekiri.</footer>
 </main>
 
 <script>
@@ -253,14 +253,10 @@
       });
       selectCell.append(checkbox);
       const nameCell = document.createElement('td');
-      if (r.visibility === 'public') {
-        const link = document.createElement('a');
-        link.href = `https://github.com/${owner}/${r.name}`;
-        link.textContent = r.name;
-        nameCell.append(link);
-      } else {
-        nameCell.textContent = r.name;
-      }
+      const link = document.createElement('a');
+      link.href = `https://github.com/${owner}/${r.name}`;
+      link.textContent = r.name;
+      nameCell.append(link);
       const visibilityCell = document.createElement('td');
       const badge = document.createElement('span');
       badge.className = `badge ${r.visibility}`;
